@@ -1,6 +1,16 @@
-import { Table, Column, Model, DataType, PrimaryKey, AutoIncrement, Unique } from 'sequelize-typescript';
+import {
+  Table,
+  Column,
+  Model,
+  DataType,
+  PrimaryKey,
+  AutoIncrement,
+  Unique,
+  HasMany,
+} from 'sequelize-typescript';
 import * as jwt from 'jsonwebtoken';
 import * as dotenv from 'dotenv';
+import { Posts } from './posts.model';
 
 dotenv.config();
 
@@ -9,7 +19,6 @@ dotenv.config();
   timestamps: true,
 })
 export class User extends Model<User> {
-
   @PrimaryKey
   @AutoIncrement
   @Column(DataType.INTEGER)
@@ -39,14 +48,22 @@ export class User extends Model<User> {
     defaultValue: 'tenant',
   })
   userType!: 'tenant' | 'landlord' | 'manager' | 'admin';
+  @HasMany(() => Posts) // Quan hệ 1 - nhiều với bảng Post
+  posts!: Posts[];
 
   public generateAuthToken(): string {
     const payload = { id: this.id, email: this.email, type: this.userType };
-    return jwt.sign(payload, process.env.JWT_SECRET || 'your_jwt_secret', { expiresIn: '1h' });
+    return jwt.sign(payload, process.env.JWT_SECRET || 'your_jwt_secret', {
+      expiresIn: '1h',
+    });
   }
 
   public generateRefreshToken(): string {
     const payload = { id: this.id, email: this.email, type: this.userType };
-    return jwt.sign(payload, process.env.REFRESH_TOKEN_SECRET || 'your_refresh_secret', { expiresIn: '7d' });
+    return jwt.sign(
+      payload,
+      process.env.REFRESH_TOKEN_SECRET || 'your_refresh_secret',
+      { expiresIn: '7d' },
+    );
   }
 }
