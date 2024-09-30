@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { User } from 'src/models/user.model';
-import * as bcrypt from 'bcrypt';
+import * as bcrypt from 'bcryptjs';
 import UserInput from 'src/interfaces/user.interface';
 
 @Injectable()
@@ -21,7 +21,8 @@ export class UserService {
   }
 
   async addUser(userInput: UserInput): Promise<User | null> {
-    const { email, password, firstName, lastName, dateOfBirth, phoneNumber } = userInput;
+    const { email, password, firstName, lastName, dateOfBirth, phoneNumber } =
+      userInput;
     const existingUser = await this.userModel.findOne({ where: { email } });
 
     if (existingUser) {
@@ -43,7 +44,10 @@ export class UserService {
 
   async getUser(page: number, limit: number) {
     const offset = (page - 1) * limit;
-    const { count, rows: users } = await this.userModel.findAndCountAll({ offset, limit });
+    const { count, rows: users } = await this.userModel.findAndCountAll({
+      offset,
+      limit,
+    });
 
     if (users.length === 0) {
       return null;
@@ -60,7 +64,8 @@ export class UserService {
   }
 
   async editUser(userInput: UserInput): Promise<User | null> {
-    const { email, password, firstName, lastName, dateOfBirth, phoneNumber } = userInput;
+    const { email, password, firstName, lastName, dateOfBirth, phoneNumber } =
+      userInput;
     const user = await this.userModel.findOne({ where: { email } });
 
     if (!user) {

@@ -4,9 +4,9 @@ import { LoginDto } from './../dtos/login.dto';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { User } from '../models/user.model';
-import * as bcrypt from 'bcrypt';
+import * as bcrypt from 'bcryptjs';
 import { AUTH_CONTANTS } from 'src/constants/auth.constants';
-import {Logger} from "@nestjs/common";
+import { Logger } from '@nestjs/common';
 @Injectable()
 export class AuthService {
   constructor(
