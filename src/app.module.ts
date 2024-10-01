@@ -3,7 +3,7 @@ import { SequelizeModule } from '@nestjs/sequelize';
 import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { AuthModule } from './modules/auth.module'; // Đảm bảo AuthModule được import đúng
+import { AuthModule } from './modules/auth.module';
 import { User } from './models/user.model';
 import { UserModule } from './modules/user.module';
 import { PostModule } from './modules/post.module';
@@ -13,11 +13,11 @@ import { Posts } from './models/posts.model';
   imports: [
     SequelizeModule.forRoot({
       dialect: 'mysql',
-      host: 'localhost',
-      port: 3306,
-      username: 'root',
-      password: '123456',
-      database: 'apartment_management',
+      host: process.env.DB_HOST || 'localhost', // Lấy từ biến môi trường
+      port: +process.env.DB_PORT || 3306, // Lấy từ biến môi trường
+      username: process.env.DB_USER || 'root', // Lấy từ biến môi trường
+      password: process.env.DB_PASSWORD || '123456', // Lấy từ biến môi trường
+      database: process.env.DB_NAME || 'apartment_management', // Lấy từ biến môi trường
       models: [User, Posts],
       autoLoadModels: true,
       synchronize: true,
